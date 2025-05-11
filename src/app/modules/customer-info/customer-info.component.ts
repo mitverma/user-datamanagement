@@ -31,6 +31,19 @@ export class CustomerInfoComponent implements OnInit {
         return obj;
       });
       console.log(customerList, 'customer list');
+      
+      // map the latest technician latest details
+      customerList?.map((item: any) => {
+        let getLatestTechnicianDetails = item?.technicalDetails[item?.technicalDetails.length - 1 ];
+        item.amount = getLatestTechnicianDetails?.amount;
+        item.billNo = getLatestTechnicianDetails?.billNo;
+        item.technicianName = getLatestTechnicianDetails?.technicianName;
+        item.technicianRemarks = getLatestTechnicianDetails?.technicianRemarks;
+        item.visitDate = getLatestTechnicianDetails?.visitDate;
+        return item;
+      })
+      // map the latest technician latest details end
+
       customerList = this.sortArray(customerList);
       this.dataSource = new MatTableDataSource(customerList);
       // this.filteredList = new MatTableDataSource([]);

@@ -83,3 +83,10 @@
 ::ng-deep .mat-focus-indicator.mat-icon-button.mat-button-base {
     color: #000;
 }
+
+.tech-detail {
+    .row {
+        box-shadow: 0 2px 3px #b6b6b6;
+        margin: 0 0 15px;
+    }
+}

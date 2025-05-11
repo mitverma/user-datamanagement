@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormArray, FormBuilder } from '@angular/forms';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { CommonService } from '../../services/common.service';
 import { Router, NavigationStart, NavigationEnd, NavigationError } from '@angular/router';
@@ -13,8 +13,9 @@ import { formatDate } from '@angular/common';
 export class CustomerDetailComponent implements OnInit {
   customerDetail: FormGroup;
   productList: Array<String> = [];
-  constructor(private fireStore: AngularFirestore, private commonService: CommonService, private router: Router) {
-    this.customerDetail = new FormGroup({
+  callTypeList: Array<String> = [];
+  constructor(private fireStore: AngularFirestore, private commonService: CommonService, private router: Router, private formBuilder: FormBuilder) {
+    this.customerDetail = this.formBuilder.group({
       fullName: new FormControl(null, [Validators.required]),
       // emailId: new FormControl(null),
       contactNo: new FormControl(null, [Validators.required]),
@@ -26,35 +27,59 @@ export class CustomerDetailComponent implements OnInit {
       serialNo: new FormControl(null, [Validators.required]),
       purchaseDate: new FormControl(null, [Validators.required]),
       callType: new FormControl(null),
-      technicianName : new FormControl(null, [Validators.required]),
-      technicianRemarks: new FormControl(null, [Validators.required]),
-      billNo: new FormControl(null, [Validators.required]),
-      amount: new FormControl(null, [Validators.required]),
-      visitDate: new FormControl(null),
+      technicalDetails: new FormArray([this.createTechnicanGroup()])
     })
 
-    this.productList = ['Barbeque', 'Bio Disposer', 'Built in Microwave Oven', 'Built in Oven', 'Chimney', 'Coffee Machine', 'Cooking Range', 'Cooktop', 'Deep Fryer', 'Dishwasher', 'Hob', 'Induction Cooker', 'Mixer Grinder', 'Pop up Toaster', 'Refrigerator', 'Rice Cooker', 'Sinks', 'Stand Alone MWO', 'Taps', 'Water Purifier'];
+    this.productList = ['RO Membrane In Wielded Housing', 'SHF RO Membrane In Wielded Housing', 'HF RO Membrane In Wielded Housing', 'RO Membrane In Wielded Compact', 'UF Membrane In Wielded Housing', 'Inline Sediment Filter', 'Inline Carbon Filter', 'Post Carbon Filter', 'Inline UF Filter', 'Sediment Filter']; // more need to be added or given by the client
+    this.callTypeList = ['Warranty', 'Out of Warranty', 'Contract']
 
   }
 
   ngOnInit(): void {
     console.log(this.commonService.customerData, 'customer data');
     if(this.commonService.customerData){
-      let visitSplitArray = this.commonService.customerData.visitDate.split('/');
-      let date = visitSplitArray[2]+'-'+visitSplitArray[1]+'-'+(visitSplitArray[0]);
-      this.commonService.customerData.visitDate = new Date(date);
-      this.customerDetail.patchValue(this.commonService.customerData);
+      if(this.commonService?.customerData?.technicalDetails?.length){
+        this.commonService?.customerData?.technicalDetails?.forEach((item: any, index: number) => {
+          let visitSplitArray = this.commonService.customerData.visitDate.split('/');
+          let date = visitSplitArray[2]+'-'+visitSplitArray[1]+'-'+(visitSplitArray[0]);
+          this.commonService.customerData.technicalDetails[index].visitDate = new Date(date);
+        })
+        this.customerDetail.patchValue(this.commonService.customerData);        
+      } 
+      this.addTechnicanGroup();     
     }
+  }
+  
+
+  addTechnicanGroup(){
+    (this.customerDetail.get('technicalDetails') as FormArray).push(this.createTechnicanGroup())
+  }
+
+  createTechnicanGroup():FormGroup{
+    return this.formBuilder.group({      
+      technicianName : new FormControl(null, [Validators.required]),
+      technicianRemarks: new FormControl(null, [Validators.required]),
+      billNo: new FormControl(null, [Validators.required]),
+      amount: new FormControl(null, [Validators.required]),
+      visitDate: new FormControl(null),
+    })
   }
 
   saveCustomerDetails(formData: any){
-    var getVisitDate = formData.value.visitDate;
-    var getDate = getVisitDate.getDate() && getVisitDate.getDate() < 10 ? '0'+ getVisitDate.getDate(): getVisitDate.getDate();
-    var getMonth = getVisitDate.getMonth() && (getVisitDate.getMonth()+1) < 10 ? ('0'+ (getVisitDate.getMonth()+1)): (getVisitDate.getMonth()+1);
-    var getYear = getVisitDate.getFullYear();
-    var setVisitDate = getDate+'/'+getMonth+'/'+getYear;
-    if(formData && formData.valid) {
-      formData.value.visitDate =  setVisitDate;
+
+    if(formData?.value?.technicalDetails?.length){
+      formData?.value?.technicalDetails.forEach((itemFormData: any) => {
+        var getVisitDate = itemFormData.visitDate;
+        var getDate = getVisitDate.getDate() && getVisitDate.getDate() < 10 ? '0'+ getVisitDate.getDate(): getVisitDate.getDate();
+        var getMonth = getVisitDate.getMonth() && (getVisitDate.getMonth()+1) < 10 ? ('0'+ (getVisitDate.getMonth()+1)): (getVisitDate.getMonth()+1);
+        var getYear = getVisitDate.getFullYear();
+        var setVisitDate = getDate+'/'+getMonth+'/'+getYear;
+        itemFormData.visitDate =  setVisitDate;
+      })
+    }
+
+
+    if(formData && formData.valid) {      
       console.log(this.fireStore, 'fire store');
       // if customer data is present then edit method is there and update
       if(this.commonService.customerData && this.commonService.customerData.id){
@@ -78,4 +103,8 @@ export class CustomerDetailComponent implements OnInit {
     }
   }
 
+
+  get technicalDetails(): FormArray {
+    return this.customerDetail.get('technicalDetails') as FormArray;
+  }
 }
