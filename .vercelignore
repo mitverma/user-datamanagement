@@ -1,0 +1,29 @@
+# Node modules and lock files
+node_modules/
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Angular build artifacts
+dist/
+out/
+.tmp/
+temp/
+build/
+
+# System and IDE files
+.DS_Store
+Thumbs.db
+*.log
+
+# Git and environment
+.git/
+.gitignore
+.env
+.env.local
+.env.*.local
+
+# Testing
+coverage/
+karma.conf.js
+test.ts
