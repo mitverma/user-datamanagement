@@ -3,7 +3,7 @@
     "routes": [
       {
         "src": "/(.*)",
-        "dest": "/dist/kent-anwar/index.html"
+        "dest": "/dist/user-datamanagement/index.html"
       }
     ]
   }
