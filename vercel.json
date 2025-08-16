@@ -1,9 +1,16 @@
 {
+    "version": 2,
     "builds": [
-      { "src": "angular.json", "use": "@vercel/angular" }
+      {
+        "src": "dist/kent-anwar/**",
+        "use": "@vercel/static"
+      }
     ],
     "routes": [
-      { "src": "/(.*)", "dest": "/index.html" }
+      {
+        "src": "/(.*)",
+        "dest": "/dist/kent-anwar/index.html"
+      }
     ]
   }
   
