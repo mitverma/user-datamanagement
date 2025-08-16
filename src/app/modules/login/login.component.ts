@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
         if(validateUserFromList){
           this.router.navigate(['dashboard']);
           sessionStorage.setItem('isLogin', 'Y');
-          // signInWithEmailAndPassword(this.auth, formData?.value?.userName, formData?.value?.password);
+          signInWithEmailAndPassword(this.auth, formData?.value?.userName, formData?.value?.password);
         } else {
           alert('Username or Password Incorrect');            
         }
