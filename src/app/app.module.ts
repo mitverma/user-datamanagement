@@ -8,6 +8,8 @@ import { SharedModule } from './shared/shared/shared.module';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { CommonService } from './services/common.service';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { provideAuth, getAuth } from '@angular/fire/auth';
 
 
 const firebaseConfig = {
@@ -29,6 +31,8 @@ const firebaseConfig = {
     AppRoutingModule,
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFirestoreModule,
+    AngularFireAuthModule,
+    provideAuth(() => getAuth()),
     SharedModule,
     BrowserAnimationsModule
   ],
