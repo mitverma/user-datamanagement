@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormArray, FormBuilder } from '@angular/forms';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Firestore, collection, collectionData, addDoc } from '@angular/fire/firestore';
 import { CommonService } from '../../services/common.service';
 import { Router, NavigationStart, NavigationEnd, NavigationError } from '@angular/router';
 import { formatDate } from '@angular/common';
@@ -14,7 +14,7 @@ export class CustomerDetailComponent implements OnInit {
   customerDetail: FormGroup;
   productList: Array<String> = [];
   callTypeList: Array<String> = [];
-  constructor(private fireStore: AngularFirestore, private commonService: CommonService, private router: Router, private formBuilder: FormBuilder) {
+  constructor(private fireStore: Firestore, private commonService: CommonService, private router: Router, private formBuilder: FormBuilder) {
     this.customerDetail = this.formBuilder.group({
       fullName: new FormControl(null, [Validators.required]),
       // emailId: new FormControl(null),
@@ -82,21 +82,21 @@ export class CustomerDetailComponent implements OnInit {
     if(formData && formData.valid) {      
       console.log(this.fireStore, 'fire store');
       // if customer data is present then edit method is there and update
-      if(this.commonService.customerData && this.commonService.customerData.id){
-        this.fireStore.doc('customerData/' + this.commonService.customerData.id).update(formData.value).then(update => {
-          console.log('sucess');
-          this.commonService.customerData = null;
-          this.customerDetail.reset();
-          this.router.navigate(['customerinfo']);
-        })
-      }else {        
-        this.fireStore.collection('customerData').add(formData.value).then(response => {
-          this.customerDetail.reset();
-          this.customerDetail.markAsUntouched();
-        }, error => {
-          alert('something went wrong contact admin');
-        })
-      }
+      // if(this.commonService.customerData && this.commonService.customerData.id){
+      //   this.fireStore.doc('customerData/' + this.commonService.customerData.id).update(formData.value).then(update => {
+      //     console.log('sucess');
+      //     this.commonService.customerData = null;
+      //     this.customerDetail.reset();
+      //     this.router.navigate(['customerinfo']);
+      //   })
+      // }else {        
+      //   this.fireStore.collection('customerData').add(formData.value).then(response => {
+      //     this.customerDetail.reset();
+      //     this.customerDetail.markAsUntouched();
+      //   }, error => {
+      //     alert('something went wrong contact admin');
+      //   })
+      // }
       
     }else {
       alert('something went wrong');

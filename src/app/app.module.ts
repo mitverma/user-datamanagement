@@ -9,7 +9,9 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { CommonService } from './services/common.service';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
+import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 
 
 const firebaseConfig = {
@@ -29,10 +31,9 @@ const firebaseConfig = {
   imports: [
     BrowserModule,
     AppRoutingModule,
-    AngularFireModule.initializeApp(firebaseConfig),
-    AngularFirestoreModule,
-    AngularFireAuthModule,
+    provideFirebaseApp(() => initializeApp(firebaseConfig)),
     provideAuth(() => getAuth()),
+    provideFirestore(() => getFirestore()),
     SharedModule,
     BrowserAnimationsModule
   ],

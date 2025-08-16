@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Firestore, collection, collectionData, addDoc } from '@angular/fire/firestore';
 import { CommonService } from '../../services/common.service';
 import { Router } from '@angular/router';
 
@@ -18,37 +18,37 @@ export class CustomerInfoComponent implements OnInit {
   listData: Array<any> = ['Amit', 'Verma', 'Cool', 'Guy'];
 
   // @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-  constructor(private fireStore: AngularFirestore, private commonService: CommonService, private router: Router) { }
+  constructor(private fireStore: Firestore, private commonService: CommonService, private router: Router) { }
 
   ngOnInit(): void {
-    this.fireStore.collection('customerData').get().subscribe((data: any) => {
-      console.log(data,'data');
-      let customerList = data.docs.map((list: any) => {
-        console.log(list.id);
-        let obj = list.data();
-        obj['id'] = list.id;
-        // return { id : list.id, ...list.data()}
-        return obj;
-      });
-      console.log(customerList, 'customer list');
+    // this.fireStore.collection('customerData').get().subscribe((data: any) => {
+    //   console.log(data,'data');
+    //   let customerList = data.docs.map((list: any) => {
+    //     console.log(list.id);
+    //     let obj = list.data();
+    //     obj['id'] = list.id;
+    //     // return { id : list.id, ...list.data()}
+    //     return obj;
+    //   });
+    //   console.log(customerList, 'customer list');
       
-      // map the latest technician latest details
-      customerList?.map((item: any) => {
-        let getLatestTechnicianDetails = item?.technicalDetails[item?.technicalDetails.length - 1 ];
-        item.amount = getLatestTechnicianDetails?.amount;
-        item.billNo = getLatestTechnicianDetails?.billNo;
-        item.technicianName = getLatestTechnicianDetails?.technicianName;
-        item.technicianRemarks = getLatestTechnicianDetails?.technicianRemarks;
-        item.visitDate = getLatestTechnicianDetails?.visitDate;
-        return item;
-      })
-      // map the latest technician latest details end
+    //   // map the latest technician latest details
+    //   customerList?.map((item: any) => {
+    //     let getLatestTechnicianDetails = item?.technicalDetails[item?.technicalDetails.length - 1 ];
+    //     item.amount = getLatestTechnicianDetails?.amount;
+    //     item.billNo = getLatestTechnicianDetails?.billNo;
+    //     item.technicianName = getLatestTechnicianDetails?.technicianName;
+    //     item.technicianRemarks = getLatestTechnicianDetails?.technicianRemarks;
+    //     item.visitDate = getLatestTechnicianDetails?.visitDate;
+    //     return item;
+    //   })
+    //   // map the latest technician latest details end
 
-      customerList = this.sortArray(customerList);
-      this.dataSource = new MatTableDataSource(customerList);
-      // this.filteredList = new MatTableDataSource([]);
-      // this.dataSource.paginator = this.paginator;
-    })
+    //   customerList = this.sortArray(customerList);
+    //   this.dataSource = new MatTableDataSource(customerList);
+    //   // this.filteredList = new MatTableDataSource([]);
+    //   // this.dataSource.paginator = this.paginator;
+    // })
   }
 
   applyFilter(event: Event) {
@@ -67,11 +67,11 @@ export class CustomerInfoComponent implements OnInit {
     console.log(rowData);
 
     var confirmation = confirm('Are you sure you want to delete');
-    if(confirmation){
-      this.fireStore.doc('customerData/'+ rowData.id).delete();
-      this.dataSource.data.splice(index,1);
-      this.dataSource.filter = ""; 
-    }
+    // if(confirmation){
+    //   this.fireStore.doc('customerData/'+ rowData.id).delete();
+    //   this.dataSource.data.splice(index,1);
+    //   this.dataSource.filter = ""; 
+    // }
     
   }
 
